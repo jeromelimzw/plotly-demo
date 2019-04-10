@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Plot from "react-plotly.js";
-import { findOne, findAllExcept } from "./static/info";
+import { findOne, findAllExcept, getCategories } from "./static/info";
 import _ from "lodash";
 
 class Scatter extends Component {
@@ -13,8 +13,7 @@ class Scatter extends Component {
       searchField: "Nellie Melba",
       radiusOne: [],
       thetaOne: [],
-      namesOne: [],
-      isGridOn: true
+      namesOne: []
     };
   }
 
@@ -23,12 +22,19 @@ class Scatter extends Component {
     this.renderOne();
   }
 
-  renderOthers = () => {
+  renderMarkers = searchterm => {
     const newRadius = [],
       newTheta = [],
       newNames = [];
-    findAllExcept(this.state.searchField).forEach(function(element) {
+
+    const array =
+      searchterm === 1
+        ? findAllExcept(this.state.searchField)
+        : findOne(this.state.searchField);
+
+    array.forEach(function(element) {
       _.times(8, () => newNames.push(element.name));
+
       element.categories.forEach(function(element) {
         newRadius.push(
           element.level === 1
@@ -49,38 +55,20 @@ class Scatter extends Component {
         );
       });
     });
-    this.setState({ radius: newRadius, theta: newTheta, names: newNames });
+    return [newRadius, newTheta, newNames];
   };
+
+  renderOthers = () => {
+    const markers = this.renderMarkers(1);
+    this.setState({ radius: markers[0], theta: markers[1], names: markers[2] });
+  };
+
   renderOne = () => {
-    const newRadius = [],
-      newTheta = [],
-      newNames = [];
-    findOne(this.state.searchField).forEach(function(element) {
-      _.times(8, () => newNames.push("You"));
-      element.categories.forEach(function(element) {
-        newRadius.push(
-          element.level === 1
-            ? _.random(0.7, 1.8)
-            : element.level === 2
-            ? _.random(2.3, 3.2)
-            : element.level === 3
-            ? _.random(3.5, 4.5)
-            : element.level === 4
-            ? _.random(5, 5.8)
-            : undefined
-        );
-        newTheta.push(
-          _.random(
-            element.category.sector[0] + 10,
-            element.category.sector[1] - 10
-          )
-        );
-      });
-    });
+    const markers = this.renderMarkers();
     this.setState({
-      radiusOne: newRadius,
-      thetaOne: newTheta,
-      namesOne: newNames
+      radiusOne: markers[0],
+      thetaOne: markers[1],
+      namesOne: markers[2]
     });
   };
 
@@ -89,11 +77,9 @@ class Scatter extends Component {
     await this.renderOthers();
     await this.renderOne();
   };
-  toggleGrid = async () => {
-    await this.setState({ isGridOn: !this.state.isGridOn });
-  };
 
   render() {
+    const { radius, theta, names, radiusOne, thetaOne, namesOne } = this.state;
     return (
       <React.Fragment>
         <input type="button" value="toggle grid" onClick={this.toggleGrid} />
@@ -127,27 +113,14 @@ class Scatter extends Component {
           useResizeHandler={true}
           style={{ width: "100%", height: "100%" }}
           data={[
-            {
+            ...[0, 45, 90, 135, 180, 225, 270, 315].map(a => ({
               r: [0, 6.2],
-              theta: [0, 0],
+              theta: [0, a],
               type: "scatterpolar",
               line: { dash: "dash", color: "gray", width: 1 },
               hoverinfo: "text"
-            },
-            {
-              r: [0, 6.2],
-              theta: [0, 45],
-              type: "scatterpolar",
-              line: { dash: "dash", color: "gray", width: 1 },
-              hoverinfo: "text"
-            },
-            {
-              r: [0, 6.2],
-              theta: [0, 90],
-              type: "scatterpolar",
-              line: { dash: "dash", color: "gray", width: 1 },
-              hoverinfo: "text"
-            },
+            })),
+
             {
               r: [1, 2.6, 4.0, 5.5],
               theta: [90, 90, 90, 90],
@@ -157,34 +130,15 @@ class Scatter extends Component {
               hoverinfo: "none",
               textfont: { size: 15 }
             },
-
-            {
-              r: this.state.radius,
-              theta: this.state.theta,
-              text: this.state.names,
-              hoverinfo: "none",
-
-              hoverlabel: {
-                bgcolor: "black",
-                bordercolor: "black",
-                font: { family: "calibri", color: "white", size: 20 }
-              },
-              mode: "markers",
-
-              marker: {
-                symbol: "circle",
-                color: "rgb(138,43,226)",
-                size: 13,
-                opacity: 0.5
-              },
-              type: "scatterpolar",
-              subplot: "polar"
-            },
-            {
-              r: this.state.radiusOne,
-              theta: this.state.thetaOne,
-              text: this.state.namesOne,
+            ...[
+              [radius, theta, names, "rgb(138, 42, 226)"],
+              [radiusOne, thetaOne, namesOne, "rgb(50, 200, 50)"]
+            ].map(a => ({
+              r: a[0],
+              theta: a[1],
+              text: a[2],
               hoverinfo: "text",
+
               hoverlabel: {
                 bgcolor: "black",
                 bordercolor: "black",
@@ -194,37 +148,21 @@ class Scatter extends Component {
 
               marker: {
                 symbol: "circle",
-                color: "rgb(50,200,50)",
+                color: a[3],
                 size: 13,
                 opacity: 0.5
               },
-              type: "scatterpolar",
-              subplot: "polar1"
-            }
+              type: "scatterpolar"
+            }))
           ]}
           layout={{
-            dragmode: "pan",
+            // dragmode: "pan",
             paper_bgcolor: "rgba(0,0,0,0)",
             plot_bgcolor: "rgba(0,0,0,0)",
             margin: { r: 150, l: 150 },
             width: 1000,
             height: 1000,
             showlegend: false,
-            // images: [
-            //   {
-            //     source: `img/${this.props.background}.png`,
-            //     xref: "paper",
-            //     yref: "paper",
-            //     xanchor: "center",
-            //     x: this.props.bgposition[0],
-            //     y: this.props.bgposition[1],
-            //     sizex: this.props.bgposition[2],
-            //     sizey: this.props.bgposition[2],
-            //     opacity: 0.8,
-            //     layer: "above"
-            //   }
-            // ],
-
             polar: {
               sector: this.props.sector,
               opacity: 1,
@@ -248,15 +186,9 @@ class Scatter extends Component {
                 showgrid: false,
                 tickmode: "array",
                 showline: false,
-
-                tickvals: [22.5, 67.5, 112.5],
-
+                tickvals: [1, 2, 3, 4, 5, 6, 7, 8].map(a => a * 45 - 22.5),
                 ticks: "",
-                ticktext: [
-                  "Religious Minorities",
-                  "Economic Justice",
-                  "Equitable Tech"
-                ],
+                ticktext: getCategories().map(a => a.name),
                 tickfont: {
                   size: 20,
                   color: "gray"

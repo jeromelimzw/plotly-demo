@@ -1,12 +1,17 @@
+const angle = 360 / 8;
+
 const category = [
-  { name: "Diversity and Inclusion", sector: [0, 45] },
-  { name: "Religious Minorities", sector: [45, 90] },
-  { name: "Society and Privilege", sector: [90, 135] },
-  { name: "Climate Injustice", sector: [135, 180] },
-  { name: "Equitable Tech", sector: [180, 225] },
-  { name: "Sexual Orientation and Gender Identity", sector: [225, 270] },
-  { name: "Racial Minorities", sector: [270, 315] },
-  { name: "Economic Justice", sector: [315, 360] }
+  { name: "Diversity & Inclusion", sector: [0, angle] },
+  { name: "Religious Minorities", sector: [angle, 2 * angle] },
+  { name: "Society and Privilege", sector: [2 * angle, 3 * angle] },
+  { name: "Climate Injustice", sector: [3 * angle, 4 * angle] },
+  { name: "Equitable Tech", sector: [4 * angle, 5 * angle] },
+  {
+    name: "Sexual Orientation & Gender Identity",
+    sector: [5 * angle, 6 * angle]
+  },
+  { name: "Racial Minorities", sector: [6 * angle, 7 * angle] },
+  { name: "Economic Justice", sector: [7 * angle, 360] }
 ];
 
 const data = [
@@ -76,6 +81,10 @@ const data = [
   }
 ];
 
+const getCategories = () => {
+  return category;
+};
+
 const findOne = tarName => {
   const oneDatum = data.find(a => a.name === tarName);
   return [oneDatum];
@@ -89,5 +98,5 @@ const findAllExcept = tarName => {
   return copy;
 };
 
-export { findOne, findAllExcept };
+export { findOne, findAllExcept, getCategories };
 export default data;
