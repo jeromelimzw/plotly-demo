@@ -4,7 +4,7 @@ import { NavLink as Link } from "react-router-dom";
 const NavBar = () => {
   return (
     <React.Fragment>
-      <Link to="full">
+      <Link to="">
         <button>Full Chart</button>
       </Link>
       <Link to="diversityandinclusion">
@@ -24,6 +24,9 @@ const NavBar = () => {
       </Link>
       <Link to="sexualorientationidentity">
         <button>Sexual Orientation and Gender Identity</button>
+      </Link>
+      <Link to="racialminorities">
+        <button>Racial Minorities</button>
       </Link>
       <Link to="economicjustice">
         <button>Economic Justice</button>

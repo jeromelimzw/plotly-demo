@@ -33,7 +33,7 @@ class Scatter extends Component {
         : findOne(this.state.searchField);
 
     array.forEach(function(element) {
-      _.times(8, () => newNames.push(element.name));
+      _.times(8, () => newNames.push(searchterm === 1 ? element.name : "You"));
 
       element.categories.forEach(function(element) {
         newRadius.push(
@@ -82,29 +82,14 @@ class Scatter extends Component {
     const { radius, theta, names, radiusOne, thetaOne, namesOne } = this.state;
     return (
       <React.Fragment>
-        <input type="button" value="toggle grid" onClick={this.toggleGrid} />
         <div>
           <span> Who are you? </span>
-          <input
-            type="button"
-            onClick={this.handleSearchField}
-            value="James Salisbury"
-          />
-          <input
-            type="button"
-            onClick={this.handleSearchField}
-            value="Anna Pavlova"
-          />
-          <input
-            type="button"
-            onClick={this.handleSearchField}
-            value="John Dory"
-          />
-          <input
-            type="button"
-            onClick={this.handleSearchField}
-            value="Nellie Melba"
-          />
+          <select onChange={this.handleSearchField}>
+            <option value="James Salisbury">James Salisbury</option>
+            <option value="Anna Pavlova">Anna Pavlova</option>
+            <option value="John Dory">John Dory</option>
+            <option value="Nellie Melba">Nellie Melba</option>
+          </select>
         </div>
         <div>
           <h1>{this.state.searchField}</h1>
@@ -123,7 +108,12 @@ class Scatter extends Component {
 
             {
               r: [1, 2.6, 4.0, 5.5],
-              theta: [90, 90, 90, 90],
+              theta: [
+                this.props.label,
+                this.props.label,
+                this.props.label,
+                this.props.label
+              ],
               text: ["open", "informed", "engaged", "activated"],
               mode: "text",
               type: "scatterpolar",
@@ -156,7 +146,7 @@ class Scatter extends Component {
             }))
           ]}
           layout={{
-            // dragmode: "pan",
+            dragmode: "pan",
             paper_bgcolor: "rgba(0,0,0,0)",
             plot_bgcolor: "rgba(0,0,0,0)",
             margin: { r: 150, l: 150 },
@@ -186,7 +176,9 @@ class Scatter extends Component {
                 showgrid: false,
                 tickmode: "array",
                 showline: false,
-                tickvals: [1, 2, 3, 4, 5, 6, 7, 8].map(a => a * 45 - 22.5),
+                tickvals: getCategories().map(
+                  (a, index) => (index + 1) * 45 - 22.5
+                ),
                 ticks: "",
                 ticktext: getCategories().map(a => a.name),
                 tickfont: {
