@@ -2,6 +2,7 @@ import React from "react";
 import { Route, Switch } from "react-router-dom";
 
 import Scatter from "./Scatter";
+import PieChart from "./PieChart";
 
 const Routes = () => {
   return (
@@ -44,6 +45,7 @@ const Routes = () => {
           path="/economicjustice"
           render={() => <Scatter sector={[315, 360]} label={337.5} />}
         />
+        <Route path="/piechart" component={PieChart} />
       </Switch>
     </React.Fragment>
   );

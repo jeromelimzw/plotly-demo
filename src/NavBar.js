@@ -31,6 +31,9 @@ const NavBar = () => {
       <Link to="economicjustice">
         <button>Economic Justice</button>
       </Link>
+      <Link to="piechart">
+        <button>Pie Chart</button>
+      </Link>
     </React.Fragment>
   );
 };

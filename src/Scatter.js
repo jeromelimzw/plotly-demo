@@ -95,6 +95,7 @@ class Scatter extends Component {
           <h1>{this.state.searchField}</h1>
         </div>
         <Plot
+          className="animated bounceInLeft"
           useResizeHandler={true}
           style={{ width: "100%", height: "100%" }}
           data={[
