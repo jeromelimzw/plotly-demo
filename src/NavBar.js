@@ -34,6 +34,9 @@ const NavBar = () => {
       <Link to="piechart">
         <button>Pie Chart</button>
       </Link>
+      <Link to="upload">
+        <button>Upload CSV</button>
+      </Link>
     </React.Fragment>
   );
 };

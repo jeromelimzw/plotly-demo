@@ -3,6 +3,7 @@ import { Route, Switch } from "react-router-dom";
 
 import Scatter from "./Scatter";
 import PieChart from "./PieChart";
+import DragAndDropUpload from "./DragAndDropUpload";
 
 const Routes = () => {
   return (
@@ -46,6 +47,7 @@ const Routes = () => {
           render={() => <Scatter sector={[315, 360]} label={337.5} />}
         />
         <Route path="/piechart" component={PieChart} />
+        <Route path="/upload" component={DragAndDropUpload} />
       </Switch>
     </React.Fragment>
   );
